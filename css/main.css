@@ -25,6 +25,7 @@ ol{
 body {
 	margin: 0px;
   background-color: #000CB9;
+  position: relative;
 }
 
 body, div, a, input, select, button, textarea {
@@ -144,7 +145,6 @@ h2 {
 }
 
 #footer {
-	position: absolute;
 	color: #ffffff;
 	bottom: 0px;
 	left: 1%;
