@@ -1,0 +1,56 @@
+<html>
+	<head>
+    	<link rel="shortcut icon" href="/images/fav.png" type="image/png" />
+
+		<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" type="text/css" href="/css/main.css">
+		<link rel="stylesheet" type="text/css" href="/css/monokai.css">
+		<link href="/blog/rss.xml" rel="alternate" type="application/rss+xml" title="{{site.blog_title}}" />
+
+
+		<title>{{site.blog_title}}</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script type="text/javascript" src='/js/jquery.min.js'></script>
+		<script type="text/javascript" src='/js/jquery.masonry.min.js'></script>
+		<script type="text/javascript" src='/js/jquery.imagesloaded.min.js'></script>
+		<script type="text/javascript" src='/js/highlight.pack.js'></script>
+		<script type="text/javascript">
+			hljs.initHighlightingOnLoad();
+			function applyTiles() {
+				var posts = $('#posts ul');
+				posts.imagesLoaded(function() {
+					$('#posts ul').masonry({ itemSelector : '.post' });;
+				});
+			}
+			$(function() {
+				applyTiles();
+			});
+			$(window).resize(function() {
+				applyTiles();
+			});
+		</script>
+		<style type="text/css">
+		</style>
+	</head>
+	<body>
+
+		{% include header.html %}
+
+		<div id='content'>
+			<p>
+		  PlayAnalyzer.com is an open source project to provide insight and tools to theatrical artists.  Currently we are in an open beta. To request access <a href="mailto:kevinmkarol+playAnalyzerAccess@gmail.com">please send an email</a> from a gmail account you wish your account to be linked to which lists your:</p>
+		  <ul>
+		  	<li>Name</li>
+		  	<li>Theater's Website (if applicable)</li>
+		  	<li>How you heard about PlayAnalyzer.com</li>
+		  </ul>
+		  <p>We ask that if you utilize the analysis tools on this site during the beta that you actively provide feedback on the quality of the tools and suggest new tools that would be of use to our growing community.  Additionally, if these tools provide novel insight into a production you are working on, we ask that you submit a write up with the content generated from this site to our gallery.  This way all theatrical practitioners can benefit from this new contextual knowledge, even without generating their own visualizations.
+		</p>
+		</div>
+
+		<div id='footer'>
+			{% include footer.html %}
+		</div>
+	</div>
+	{% include googleana.html %}
+</body>
+</html>
