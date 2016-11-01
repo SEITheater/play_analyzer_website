@@ -2,6 +2,7 @@
 @import url(http://fonts.googleapis.com/css?family=Doppio+One);
 @import url(https://fonts.googleapis.com/css?family=Lato:400,700);
 @import url(https://fonts.googleapis.com/css?family=Roboto:100);
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
 
 img, embed, object{
 	max-width: 100%;
@@ -29,8 +30,10 @@ body {
 }
 
 body, div, a, input, select, button, textarea {
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Ubuntu', sans-serif;
 	color: #FFFFFF;
+	letter-spacing: 0.05rem;
+	font-weight: 50;
 }
 
 
@@ -107,13 +110,8 @@ h2 {
 
 .headerElement{
 	display:inline-block;
-	width: 15%;
-	padding: 10px 0% 0% 15%;
+	padding: 10px 0% 0% 30%;
 	font-size:1.5rem;
-}
-.headerSeperator{
-	display:inline-block;
-	padding: 0px 0% 0px;
 }
 
 #links a {
@@ -142,6 +140,7 @@ h2 {
 
 #content {
     margin: 0px 1% 0px ;
+    padding: 0px 0px 2rem ;
 }
 
 #footer {
@@ -154,7 +153,11 @@ h2 {
 }
 
 #foot-centered{
-	position: relative;
+	font-size: 1.5rem;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	margin-bottom: 0px;
 	text-align: center;
 }
 
