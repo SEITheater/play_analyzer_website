@@ -1,0 +1,33 @@
+#introText{
+	text-align: center;
+}
+
+#interactionPanel{
+	text-align: center;
+}
+
+
+#controlPanel{
+	display: none;
+	text-align: center;
+}
+
+#analyzingProgress{
+	display: none;
+}
+
+p{
+	font-size: 1rem;
+}
+
+#parametersDescription{
+	display: none;
+}
+
+#submitRequest{
+	color: black;
+}
+
+input{
+	color: black;
+}

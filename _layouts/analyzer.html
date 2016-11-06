@@ -1,0 +1,33 @@
+<html>
+	<head>
+    <link rel="shortcut icon" href="/images/fav.png" type="image/png" />
+		<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" type="text/css" href="/css/main.css">
+		<link rel="stylesheet" type="text/css" href="/css/dropzone.css">
+		<link rel="stylesheet" type="text/css" href="/css/analyzer.css">
+		<link href="/blog/rss.xml" rel="alternate" type="application/rss+xml" title="{{site.blog_title}}" />
+
+		<title>{{site.blog_title}}</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	</head>
+	<body>
+			{% include header.html %}
+
+
+		<div id='content'>
+			{% include analyzer_content.html %}
+		</div>
+
+		<div id='footer'>
+			{% include footer.html %}
+		</div>
+	</div>
+	{% include googleana.html %}
+</body>
+<script type="text/javascript" src='/js/jquery.min.js'></script>
+<script type="text/javascript" src="/js/analyzer_controller.js"></script>
+<script type="text/javascript" src="/js/make_api_requests.js"></script>
+<script type="text/javascript" src="/js/dropzone.js"></script>
+<script type="text/javascript" src="/js/file_uploader.js"></script>
+
+</html>

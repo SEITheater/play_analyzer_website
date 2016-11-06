@@ -1,0 +1,30 @@
+<div id="introText">
+
+  <h1>Analyzer Web Interface</h1>
+  <div id="uploadInstructions">To start an interactive analysis session drag and drop a play marked up with PML onto this page from your computer.</div>
+  <br><br>
+
+  This page gives you access to the core metadata and visualization tools that PlayAnalyzer.com provides in an interactive environment.  This functionality is also available in a fully RESTful context for individuals with an introductory knowledge of python.  See the <a href="http://docs.playanalyzer.com/">documentation</a> for more information.
+
+</div>
+<div id="interactionPanel">
+	<div id="vizOutput"></div>
+
+	<div id="controlPanel">
+		<div id="requestSelection">
+		</div>
+		<div id="parametersDescription">Set parameters for the analysis, and then hit the AnalyzePlay button</div>
+		<div id="parameters">
+		</div>
+		<button id="submitRequest">Analyze Play</button>
+	</div>
+
+	<div id="analyzingProgress">
+		<p>Analysis in progress...</p>
+	</div>
+</div>
+
+
+<!-- Hides the automatic file uploading displays -->
+<div id="template"><div></div></div>
+<div id="dropZone"></div>

@@ -4,9 +4,9 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:100);
 @import url('https://fonts.googleapis.com/css?family=Ubuntu');
 
-img, embed, object{
+/*img, embed, object{
 	max-width: 100%;
-}
+}*/
 
 p{
 	font-size: 1.5rem;
@@ -67,10 +67,10 @@ a:hover {
 	text-decoration: none;
 }
 
-img{
+/*img{
 	width: 15%;
 	border: 0px;
-}
+}*/
 
 a img {
 	border: 0px;
@@ -110,7 +110,7 @@ h2 {
 
 .headerElement{
 	display:inline-block;
-	padding: 10px 0% 0% 30%;
+	padding: 10px 0% 0% 20%;
 	font-size:1.5rem;
 }
 
