@@ -195,6 +195,27 @@ function idStageDirections(e){
 
 // -------------
 function createEntrancesExitsMap(){
+  // add stage direction if there are directions before the first character speaks
+  var localDelinetaeIdx = 0
+  for(key in delineateMap){
+  	var entry = delineateMap[key]
+  	if(entry["isLine"]){
+  		break
+  	}
+  	localDelinetaeIdx += 1
+  }
+
+  if(localDelinetaeIdx > 0){
+  	var direction = fullText.substring(0, delineateMap[localDelinetaeIdx]["idx"])
+    entrancesExitsMap.push({
+                     "type": "stageDirection",
+                     "text": direction,
+                     "entrances": [],
+                     "exits": []
+                     })
+  }
+
+  // break out all other divs
 	for(var key in stageDirectionMap){
 		var entry = stageDirectionMap[key]
 		var character = entry["character"]
@@ -279,6 +300,12 @@ function setEntrancesExitsDisplay(){
 		$("#entrancesExitsText").html(entry["text"])
   	setOnStageOffStage()
 	}else{
+		entrancesExitsMap.push(entrancesExitsMap.push({
+                           "type": "stageDirection",
+                           "text": "",
+                           "entrances": [],
+                           "exits": charsOnStage
+	                         }))
 		markupComplete()
 	}
 }
@@ -352,7 +379,9 @@ function createFinalPML(){
 			finalString += "@l{name:" + entry["character"] + "}\n"
 			finalString += entry["text"] + "\n"
 		}else if(entry["type"] == "stageDirection"){
-		  finalString += "@d{}\n" + entry["text"] + "\n"
+			if(entry["text"].length > 0){
+		    finalString += "@d{}\n" + entry["text"] + "\n"
+		  }
 			// entrances
 			if(entry["entrances"].length > 0){
 			  finalString += "@e{names:["
@@ -450,10 +479,14 @@ function stageDirectionsComplete(){
 	})
 
 	createEntrancesExitsMap()
-	charsOffStage = characterList
-	findNextStageDirection()
-	setEntrancesExitsDisplay()
-	$("#entrancesExits").show()
+	if(entrancesExitsMap.length > 0){
+	  charsOffStage = characterList
+	  findNextStageDirection()
+	  setEntrancesExitsDisplay()
+	  $("#entrancesExits").show()
+  }else{
+  	markupComplete()
+  }
 }
 
 
