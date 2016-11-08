@@ -1,0 +1,97 @@
+input{
+	color: black;
+}
+button{
+	color:black;
+}
+textarea{
+	color:black;
+}
+
+#characterList{
+	width:50%;
+	height: 100px;
+	resize: none;
+}
+
+#sceneText{
+	display: none;
+}
+
+#rawText{
+	width: 50%;
+	height: 200px;
+	resize: none;
+
+}
+
+#actNum{
+	width: 35px;
+	margin-left: 10px;
+}
+
+#sceneNum{
+	width: 35px;
+	margin-left: 10px;
+}
+
+#delineateLines{
+	display: none;
+	position: relative;
+	white-space: pre-wrap;
+	width: 70%;
+}
+
+#highlightChar{
+	font-size: 1.5rem;
+	display: inline-block;
+	color: red;
+}
+
+#stageDirections{
+	display: none;
+}
+
+.highlightedDirections{
+	color: red;
+}
+
+#entrancesExits{
+	display: none;
+}
+
+#entrancesExitsText{
+	width: 50%;
+	height: 300px;
+}
+
+#offStage{
+	width: 30%;
+	size: 8;
+	color: black;
+}
+
+#onStage{
+	width: 30%;
+	size: 8;
+	color: black;
+}
+
+#onStagePanel{
+	width: 45%;
+	position:relative;
+}
+
+#offStagePanel{
+	width: 45%;
+	position:relative;
+}
+
+#markupComplete{
+	display: none;
+}
+
+#pmlOutput{
+	width: 70%;
+	height: 200px;
+}
