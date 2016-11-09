@@ -334,7 +334,17 @@ function enterStage(){
 	var entering = $("#offStage").val()
 	for(key in entering){
 		var enters = entering[key]
-		entrancesExitsMap[entrancesExitsIndex]["entrances"].push(enters)
+
+		// Remove it from the exit map in case of toggling back and forth
+		var exitsIdx = entrancesExitsMap[entrancesExitsIndex]["exits"].indexOf(enters)
+		if(exitsIdx != -1){
+  		entrancesExitsMap[entrancesExitsIndex]["exits"].splice(exitsIdx, 1)
+  	}else{
+  	  // Update the entrances map
+		  entrancesExitsMap[entrancesExitsIndex]["entrances"].push(enters)
+  	}
+
+		// Remove it from tracking for display
 		var offIdx = charsOffStage.indexOf(enters)
 		charsOffStage.splice(offIdx,1)
 		charsOnStage.push(enters)
@@ -346,7 +356,17 @@ function exitStage(){
 	var exiting = $("#onStage").val()
 	for(key in exiting){
 		var exits = exiting[key]
-		entrancesExitsMap[entrancesExitsIndex]["exits"].push(exits)
+
+		// Remove it from the exit map in case of toggling back and forth
+		var entersIdx = entrancesExitsMap[entrancesExitsIndex]["entrances"].indexOf(exits)
+		if(entersIdx != -1){
+  		entrancesExitsMap[entrancesExitsIndex]["entrances"].splice(entersIdx, 1)
+  	}else{
+  	  // Update the exits map
+		  entrancesExitsMap[entrancesExitsIndex]["exits"].push(exits)
+  	}
+
+		// Remove it from tracking for display
 		var offIdx = charsOnStage.indexOf(exits)
 		charsOnStage.splice(offIdx,1)
 		charsOffStage.push(exits)
