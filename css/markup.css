@@ -6,6 +6,11 @@ button{
 }
 textarea{
 	color:black;
+	font-size: .7rem;
+}
+
+#intro{
+	text-align: center;
 }
 
 #characterList{
@@ -16,6 +21,7 @@ textarea{
 
 #sceneText{
 	display: none;
+	text-align: center;
 }
 
 #rawText{
@@ -39,7 +45,10 @@ textarea{
 	display: none;
 	position: relative;
 	white-space: pre-wrap;
-	width: 70%;
+}
+
+#delineateLines h1{
+	text-align: center;
 }
 
 #highlightChar{
@@ -52,27 +61,32 @@ textarea{
 	display: none;
 }
 
+
+
 .highlightedDirections{
 	color: red;
 }
 
 #entrancesExits{
 	display: none;
+	text-align: center;
 }
 
 #entrancesExitsText{
 	width: 50%;
-	height: 300px;
+	height: 150px;
 }
 
 #offStage{
 	width: 30%;
+	height: 75;
 	size: 8;
 	color: black;
 }
 
 #onStage{
 	width: 30%;
+	height: 75;
 	size: 8;
 	color: black;
 }
@@ -80,18 +94,45 @@ textarea{
 #onStagePanel{
 	width: 45%;
 	position:relative;
+	display: inline-block;
 }
 
 #offStagePanel{
 	width: 45%;
 	position:relative;
+	display: inline-block;
 }
 
 #markupComplete{
 	display: none;
+	text-align: center;
 }
 
 #pmlOutput{
 	width: 70%;
 	height: 200px;
+}
+
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+button{
+  background-color: #4CABFF; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  margin: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+
+#entrancesExits button{
+	vertical-align: top;
 }

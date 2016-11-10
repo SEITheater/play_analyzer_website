@@ -126,6 +126,9 @@ function createStageDirectionMap(){
 		}
 	}
 	// add the final entry with all remaining text
+	if(previousEntry == null){
+		previousEntry = {"idx": 0, "character": ""}
+	}
 	var fakeEntry = {"idx": fullText.length + 1}
 	appendBetweenEntrys(previousEntry, fakeEntry)
 }
@@ -272,6 +275,7 @@ function findPreviousStageDirection(){
 		entrancesExitsMap[entrancesExitsIndex]["type"] != "stageDirection"){
 		entrancesExitsIndex -= 1
 	}
+	entrancesExitsIndex = entrancesExitsIndex >= 0 ? entrancesExitsIndex: 0
 	return entrancesExitsMap[entrancesExitsIndex]["type"] == "stageDirection"
 }
 
@@ -395,9 +399,12 @@ function createFinalPML(){
 
 	for(key in entrancesExitsMap){
 		entry = entrancesExitsMap[key]
-		if(entry["type"] == "line"){
+		if(entry["type"] == "line" && entry["character"] != ""){
 			finalString += "@l{name:" + entry["character"] + "}\n"
 			finalString += entry["text"] + "\n"
+		}else if(entry["type"] == "line" && entry["character"] == ""){
+			// No delineation, so all stage direction
+			finalString += "@d{}\n" + entry["text"] + "\n"
 		}else if(entry["type"] == "stageDirection"){
 			if(entry["text"].length > 0){
 		    finalString += "@d{}\n" + entry["text"] + "\n"
@@ -448,41 +455,50 @@ function textSubmitted(){
 	}
 	$("#sceneText").hide()
 	createDelineateMap()
-	setDelineateDisplay()
-	$("#delineateLines").show()
-	$(document).keydown(function(e){
-		if(e.keyCode == 39){
-			delineationIsDialogue()
-		}else if(e.keyCode == 37){
-			delineationNotDialogue()
-		}else if(e.keyCode == 40 || e.keyCode == 38){
-			previousDelineation()
-		}
-	})
+	if(delineateMap.length > 0){
+	  setDelineateDisplay()
+	  $("#delineateLines").show()
+	  $(document).keydown(function(e){
+		  if(e.keyCode == 39){
+		  	delineationIsDialogue()
+		  }else if(e.keyCode == 37){
+		  	delineationNotDialogue()
+		  }else if(e.keyCode == 40 || e.keyCode == 38){
+		  	previousDelineation()
+		  }
+	  })
+  }else{
+  	delineationComplete()
+  }
 }
 
 function delineationComplete(){
 	$("#delineateLines").hide()
 	createStageDirectionMap()
-	setStageDirectionDisplay()
-	$("#stageDirections").show()
-	$(document).unbind("keydown")
-	$(document).keydown(function(e){
-		if(e.keyCode == 39){
-			//advance
-			stageDirectionNext()
-		}else if(e.keyCode == 37){
-			// go back
-			stageDirectionBack()
-		}else if(e.keyCode == 67){
-			// clear current set
-			clearDeletedDirections()
-		}
-	})
+	if(stageDirectionMap.length != 0
+		&& stageDirectionMap[0]["character"] != ""){
+	  setStageDirectionDisplay()
+	  $("#stageDirections").show()
+	  $(document).unbind("keydown")
+	  $(document).keydown(function(e){
+		  if(e.keyCode == 39){
+		  	//advance
+		  	stageDirectionNext()
+		  }else if(e.keyCode == 37){
+		  	// go back
+		  	stageDirectionBack()
+		  }else if(e.keyCode == 67){
+		  	// clear current set
+		  	clearDeletedDirections()
+		  }
+	  })
 
-  // double click word
-  $("#highlightStageDirections").css({cursor:'pointer'})
-  $("#highlightStageDirections").dblclick(idStageDirections);
+    // double click word
+    $("#highlightStageDirections").css({cursor:'pointer'})
+    $("#highlightStageDirections").dblclick(idStageDirections);
+  }else{
+  	stageDirectionsComplete()
+  }
 }
 
 function stageDirectionsComplete(){
@@ -499,6 +515,16 @@ function stageDirectionsComplete(){
 	})
 
 	createEntrancesExitsMap()
+
+
+
+	if(entrancesExitsMap.length == 1){
+		if(entrancesExitsMap[0]["type"] == "line"
+		  && entrancesExitsMap[0]["character"] == ""){
+			markupComplete()
+		  return
+		}
+	}
 	if(entrancesExitsMap.length > 0){
 	  charsOffStage = characterList
 	  findNextStageDirection()
@@ -512,6 +538,7 @@ function stageDirectionsComplete(){
 
 function markupComplete(){
 	$("#entrancesExits").hide()
+	$(document).unbind("keydown")
 	createFinalPML()
 	$("#markupComplete").show()
 }
@@ -544,7 +571,24 @@ function nextScene(){
 	$("#sceneText").show()
 }
 
+var characterListClickCount = 0
+var rawTextClickCount = 0
+
 $(document).ready(function(){
+	$("#characterList").click(function(){
+		if(characterListClickCount == 0){
+			$("#characterList").val("")
+			characterListClickCount += 1
+		}
+	})
+  
+  $("#rawText").click(function(){
+		if(rawTextClickCount == 0){
+			$("#rawText").val("")
+			rawTextClickCount += 1
+		}
+	})
+
 
 	$("#submitCharacters").click(charactersTransition)
 	$("#charactersBack").click(charactersTransition)

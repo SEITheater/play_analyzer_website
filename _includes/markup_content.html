@@ -2,15 +2,15 @@
 	<p id="introText">Welcome to the PlayAnalyzer.com markup assistant!  In order to use the analyzer on this site the text of the play you want to work with has to be marked up into a format called <a href="http://docs.playanalyzer.com/pml/">Play Markup Language (PML).</a>  Although it's possible to convert a play to PML by hand this markup assistant helps to automate the process.  Through a series of binary choices you will quickly move through the raw text and end up with a new file that the analyzer can understand.</p>
 	<textarea id="characterList">To get started, enter a comma seperated list of all characters in the show.</textarea><br>
 
-	<button id="submitCharacters">Characters Listed</button>
+	<button id="submitCharacters">Let's Get Started!</button>
 </div>
 
 <div id="sceneText">
+
+	<textarea id="rawText">Paste the raw text of a scene from the show into this box.</textarea><br>
+	Act:<input type="number" id="actNum" step="1" min="0"  value="0" />
+	Scene:<input type="number" id="sceneNum" step="1" min="0" value="0" /><br>
 	<div id="asFailMessage"></div>
-	Act number:<input type="number" id="actNum" step="1" min="0"  value="0" /><br>
-	Scene number:<input type="number" id="sceneNum" step="1" min="0" value="0" /><br>
-	Scene Text:<br>
-	<textarea id="rawText">Now write the act and scene number, and then paste the raw text of a scene from the show into this box.</textarea><br>
 	<button id="charactersBack">Back to Characters</button><button id="submitRawText">Start Markup</button>
 
 </div>
@@ -33,11 +33,11 @@
 	<p>If characters enter or exit during this stage direction, move them appropriately. Forward arrow to advance to next stage direction, backward arrow to go back.</p>
 	<textarea id="entrancesExitsText" disabled></textarea><br>
 	<div id="offStagePanel">
-	  Offstage:<select id="offStage" multiple></select>
+	  <p>Offstage:</p><select id="offStage" multiple></select>
 	  <button id="enterStage">Enter</button>
   </div>
   <div id="onStagePanel">
-	  Onstage:<select id="onStage" multiple></select>
+	  <p>Onstage:</p><select id="onStage" multiple></select>
 	  <button id="exitStage">Exit</button><br>
   </div>
 </div>
