@@ -68,7 +68,7 @@ function layoutCommonContexts(responseFromServer){
 
 function layoutConcordance(responseFromServer){
 	var firstLineIDX = responseFromServer.indexOf("\n")
-	return responseFromServer.substring(firstLineIDX).replace("\n", "<br>")
+	return responseFromServer.substring(firstLineIDX)
 }
 
 function parseMetadata(responseObject){
