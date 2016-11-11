@@ -133,38 +133,22 @@ function blobToBase64(input) { // fn BLOB => Binary => Base64 ?
     return base64;
 };
 
-function parseMetadata(responseObject){
-	reqObj = getCurrentRequestObject()
-	retFormat = reqObj["return_format"]
-	var htmlString = ""
-	for(entry in responseObject){
-		var subObject = responseObject[entry]
-		var asString = JSON.stringify(subObject)
-		if(asString.indexOf("[") == -1 && asString.indexOf("{") == -1){
-		  htmlString += responseObject[entry] + "<br>"
-		}else{
-		  htmlString += parseMetadata(subObject) + "<br>"
-   	}
-	}
-	return htmlString
-}
-
 function resultOfUserRequest(responseFromServer){
 	toggleAnalyzingDisplay()
 	var reqObject = getCurrentRequestObject()
 	if(reqObject["request_path"] == "generate_viz"){
 		imgString = '<img src="data:image/png;base64, ' + responseFromServer + '"/>'
 		$("#vizOutput").html(imgString)
+		$("#vizOutput").css('text-align', 'center')
 	}else{
-		var htmlString = ""
-		try{
-			htmlString = parseMetadata(JSON.parse(responseFromServer))
-		}catch(e){
-			htmlString = responseFromServer.replace("\n", "<br>")
-		}
-
-  	$("#vizOutput").html(htmlString)
+		var htmlString = parseMetadataResponse(responseFromServer, reqObject["request_type"])
+		$("#vizOutput").html(htmlString)
+		$("#vizOutput").css('text-align', 'left')
   }
+}
+function serverError(){
+	alert("There appears to be an error in your request")
+	toggleAnalyzingDisplay()
 }
 
 function toggleAnalyzingDisplay(){
@@ -181,7 +165,7 @@ $(document).ready(function(){
 		toggleAnalyzingDisplay()
 		var reqObject = getCurrentRequestObject()
 		var params = collectCurrentParameters()
-		makePostRequest(activeFile, reqObject["request_path"], reqObject["request_type"], params, resultOfUserRequest)
+		makePostRequest(activeFile, reqObject["request_path"], reqObject["request_type"], params, resultOfUserRequest, serverError)
 		// let analytics know about the rquest
 		analysisRequested(reqObject["request_type"])
 	})

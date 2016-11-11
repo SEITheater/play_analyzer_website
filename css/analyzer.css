@@ -24,10 +24,11 @@ p{
 	display: none;
 }
 
-#submitRequest{
+input{
 	color: black;
 }
 
-input{
-	color: black;
+#vizOutput{
+	text-align: left;
+	white-space: pre-wrap;
 }
