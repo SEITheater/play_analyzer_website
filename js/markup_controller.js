@@ -571,6 +571,24 @@ function nextScene(){
 	$("#sceneText").show()
 }
 
+function makeHeader(){
+	$("#intro").hide()
+	$("#markupComplete").hide()
+	$("#makeHeader").show()
+	$("#titleInput").on('paste, keyup', updateHeaderOutput)
+	$("#authorInput").on('paste, keyup', updateHeaderOutput)
+	$(document).click(updateHeaderOutput)
+}
+
+function updateHeaderOutput(){
+	var titleVal = $("#titleInput").val()
+	var authorVal = $("#authorInput").val()
+	pmlString = '@v{"version": 0.1}\n @play{"title":"'
+	              + titleVal + '"}, "author": "' + authorVal + '"}\n'
+
+	$("#headerOutput").html(pmlString)
+}
+
 var characterListClickCount = 0
 var rawTextClickCount = 0
 
@@ -589,7 +607,6 @@ $(document).ready(function(){
 		}
 	})
 
-
 	$("#submitCharacters").click(charactersTransition)
 	$("#charactersBack").click(charactersTransition)
 	$("#submitRawText").click(textSubmitted)
@@ -599,5 +616,7 @@ $(document).ready(function(){
 	$("#exitStage").click(exitStage)
 
 	$("#nextScene").click(nextScene)
+
+	$(".makeHeaderClick").click(makeHeader)
 
 })

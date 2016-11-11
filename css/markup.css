@@ -61,8 +61,6 @@ textarea{
 	display: none;
 }
 
-
-
 .highlightedDirections{
 	color: red;
 }
@@ -132,7 +130,21 @@ button{
   font-size: 16px;
 }
 
-
 #entrancesExits button{
 	vertical-align: top;
 }
+
+#makeHeader{
+	display: none;
+	text-align: center;
+	white-space: pre-wrap;
+}
+
+#makeHeader p{
+	margin-bottom: 0px;
+}
+
+.makeHeaderClick{
+	color: #4CABFF;
+}
+
