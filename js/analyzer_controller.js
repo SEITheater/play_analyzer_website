@@ -182,6 +182,8 @@ $(document).ready(function(){
 		var reqObject = getCurrentRequestObject()
 		var params = collectCurrentParameters()
 		makePostRequest(activeFile, reqObject["request_path"], reqObject["request_type"], params, resultOfUserRequest)
+		// let analytics know about the rquest
+		analysisRequested(reqObject["request_type"])
 	})
 });
 
