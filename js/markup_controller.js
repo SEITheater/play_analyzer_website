@@ -20,527 +20,588 @@ var charsOffStage = []
 
 // Processing functions
 function createDelineateMap(){
-	fullText = $("#rawText").val()
-	var lowerCaseText = fullText.toLowerCase()
-	var lowerCaseCharacters = []
-	for(var key in characterList){
-		lowerCaseCharacters.push(characterList[key].toLowerCase())
-	}
-	for(var key in lowerCaseCharacters){
-		var entry = lowerCaseCharacters[key]
-		var idx = -1
-		while((idx = lowerCaseText.indexOf(entry, idx + 1)) != -1){
-			var charBefore = lowerCaseText.charAt(idx - 1)
-			var charAfter = lowerCaseText.charAt(idx + entry.length)
-			// ensure there is some form of white space so that sub words aren't selected
-			var beforeValid = (idx == 0) || ((/[^a-zA-Z\d]/g.test(charBefore)))
-			var afterValid = (idx == lowerCaseText.length) || (/[^a-zA-Z\d]/g.test(charAfter))
-			if(beforeValid && afterValid){
-			  delineateMap.push({"character": characterList[key],
-		                     "idx": idx,
-		                     "isLine": false})
-		  }
-		}
-	}
-	function sortMap(a, b){
+  fullText = $("#rawText").val()
+  var lowerCaseText = fullText.toLowerCase()
+  var lowerCaseCharacters = []
+  for(var key in characterList){
+    lowerCaseCharacters.push(characterList[key].toLowerCase())
+  }
+  for(var key in lowerCaseCharacters){
+    var entry = lowerCaseCharacters[key]
+    var idx = -1
+    while((idx = lowerCaseText.indexOf(entry, idx + 1)) != -1){
+      var charBefore = lowerCaseText.charAt(idx - 1)
+      var charAfter = lowerCaseText.charAt(idx + entry.length)
+      // ensure there is some form of white space so that sub words aren't selected
+      var beforeValid = (idx == 0) || ((/[^a-zA-Z\d]/g.test(charBefore)))
+      var afterValid = (idx == lowerCaseText.length) || (/[^a-zA-Z\d]/g.test(charAfter))
+      if(beforeValid && afterValid){
+        delineateMap.push({"character": characterList[key],
+                         "idx": idx,
+                         "isLine": false})
+      }
+    }
+  }
+  function sortMap(a, b){
     if(a["idx"] > b["idx"]){
-    	return 1
+      return 1
     }else if(a["idx"] < b["idx"]){
-    	return -1
+      return -1
     }
     return 0
-	}
-	delineateMap.sort(sortMap)
+  }
+  delineateMap.sort(sortMap)
 }
 
 function setDelineateDisplay(){
-	if(delineateIndex < 0){
-		delineateIndex = 0;
-		return
-	}
+  if(delineateIndex < 0){
+    delineateIndex = 0;
+    return
+  }
 
-	if(delineateIndex < delineateMap.length){
-		var entry = delineateMap[delineateIndex]
-		var startIdx = entry["idx"]
-		var endIdx = startIdx + entry["character"].length
+  if(delineateIndex < delineateMap.length){
+    var entry = delineateMap[delineateIndex]
+    var startIdx = entry["idx"]
+    var endIdx = startIdx + entry["character"].length
 
-		var surroundSize = 250
-		var beforeIdx = startIdx - surroundSize
-		beforeIdx = beforeIdx >= 0 ? beforeIdx : 0
+    var surroundSize = 250
+    var beforeIdx = startIdx - surroundSize
+    beforeIdx = beforeIdx >= 0 ? beforeIdx : 0
 
-		var afterIdx = endIdx + surroundSize
-		afterIdx =  afterIdx <= fullText.length ? afterIdx : fullText.length
+    var afterIdx = endIdx + surroundSize
+    afterIdx =  afterIdx <= fullText.length ? afterIdx : fullText.length
 
-		var priorString = fullText.substring(beforeIdx, startIdx)
-		var postString = fullText.substring(endIdx, afterIdx)
-		$("#delineateText").html(priorString) 
-		$("#delineateText").append('<div id="highlightChar">' + fullText.substring(startIdx, endIdx) + "</div>")
-		$("#delineateText").append(postString)
+    var priorString = fullText.substring(beforeIdx, startIdx)
+    var postString = fullText.substring(endIdx, afterIdx)
+    $("#delineateText").html(priorString) 
+    $("#delineateText").append('<div id="highlightChar">' + fullText.substring(startIdx, endIdx) + "</div>")
+    $("#delineateText").append(postString)
 
-
-
-	}else{
-		delineationComplete()
-	}
+  }else{
+    delineationComplete()
+  }
 }
 
 function delineationIsDialogue(){
-	delineateMap[delineateIndex]["isLine"] = true
-	delineateIndex += 1
-	setDelineateDisplay()
+  delineateMap[delineateIndex]["isLine"] = true
+  delineateIndex += 1
+  setDelineateDisplay()
 
 }
 
 function delineationNotDialogue(){
-	delineateMap[delineateIndex]["isLine"] = false
-	delineateIndex += 1
-	setDelineateDisplay()
+  delineateMap[delineateIndex]["isLine"] = false
+  delineateIndex += 1
+  setDelineateDisplay()
 }
 
 function previousDelineation(){
-	delineateIndex -= 1
-	setDelineateDisplay()
+  delineateIndex -= 1
+  setDelineateDisplay()
 }
 
 function createStageDirectionMap(){
-	function appendBetweenEntrys(oldEntry, newEntry){
-		var startIdx = oldEntry["idx"]
-		var endIdx = startIdx + oldEntry["character"].length
-		var charName = fullText.substring(startIdx, endIdx)
-		stageDirectionMap.push({
-		                      "character": charName,
-		                      "rawText": fullText.substring(endIdx, newEntry["idx"]),
-		                      "markedText": fullText.substring(endIdx, newEntry["idx"])
-	                       })
-	}
+  function appendBetweenEntrys(oldEntry, newEntry){
+    var startIdx = oldEntry["idx"]
+    var endIdx = startIdx + oldEntry["character"].length
+    var charName = fullText.substring(startIdx, endIdx)
 
-	var previousEntry = null
-	var entry = {"isLine": false}
-	for(var key in delineateMap){
-		entry = delineateMap[key]
-		if(entry["isLine"]){
-			if(previousEntry != null){
-				appendBetweenEntrys(previousEntry, entry)
-  		}
-  		previousEntry = entry
-		}
-	}
-	// add the final entry with all remaining text
-	if(previousEntry == null){
-		previousEntry = {"idx": 0, "character": ""}
-	}
-	var fakeEntry = {"idx": fullText.length + 1}
-	appendBetweenEntrys(previousEntry, fakeEntry)
-}
+    // setting up html
+    //var rawArray = fullText.substring(endIdx, newEntry["idx"]).split(/\s+/)
+    var rawArray = fullText.substring(endIdx, newEntry["idx"]).split(" ")
+    var htmlString = '<div id="stageDirectionContainer">'
+    for(var key in rawArray){
+      var word = rawArray[key]
+      htmlString += '<div class="dialogueWord unmarked">' + word + '</div>'
+    }
+    htmlString += "</div>"
 
-function setStageDirectionDisplay(){
-	if(stageDirectionIndex < stageDirectionMap.length){
-	  var entry = stageDirectionMap[stageDirectionIndex]
-	  $("#directionCharacterName").html(entry["character"])
-	  $("#highlightStageDirections").html(entry["markedText"])
-  }else{
-  	stageDirectionsComplete()
+    htmlString = htmlString.replace(/(?:\r\n|\r|\n)/g, '</div><br /><div class="dialogueWord unmarked">')
+
+    stageDirectionMap.push({
+                          "character": charName,
+                          "rawText": fullText.substring(endIdx, newEntry["idx"]),
+                          "html": htmlString
+                         })
   }
+
+  var previousEntry = null
+  var entry = {"isLine": false}
+  for(var key in delineateMap){
+    entry = delineateMap[key]
+    if(entry["isLine"]){
+      if(previousEntry != null){
+        appendBetweenEntrys(previousEntry, entry)
+      }else if(entry["idx"] != 0){
+        entrancesExitsMap.push({
+          "type": "stageDirection",
+          "text": fullText.substring(0, entry["idx"]),
+          "entrances": [],
+          "exits": []
+        })        
+      }
+      previousEntry = entry
+    }
+  }
+  // add the final entry with all remaining text
+  if(previousEntry == null){
+    previousEntry = {"idx": 0, "character": ""}
+  }
+  var fakeEntry = {"idx": fullText.length + 1}
+  appendBetweenEntrys(previousEntry, fakeEntry)
 }
 
 
 function stageDirectionBack(){
-	stageDirectionIndex -= 1
-	stageDirectionIndex = stageDirectionIndex >= 0 ? stageDirectionIndex : 0
-	setStageDirectionDisplay()
+  stageDirectionMap[stageDirectionIndex]["html"] = $("#stageDirectionContainer").parent().html()
+  stageDirectionIndex -= 1
+  stageDirectionIndex = stageDirectionIndex >= 0 ? stageDirectionIndex : 0
+  setStageDirectionDisplay()
 
 }
 
 function stageDirectionNext(){
-	stageDirectionIndex += 1
-	setStageDirectionDisplay()
+  stageDirectionMap[stageDirectionIndex]["html"] = $("#stageDirectionContainer").parent().html()
+  stageDirectionIndex += 1
+  setStageDirectionDisplay()
 }
 
 function clearDeletedDirections(){
-	stageDirectionMap[stageDirectionIndex]["markedText"] = stageDirectionMap[stageDirectionIndex]["rawText"]
-	setStageDirectionDisplay()
+  var allDivs = $("#stageDirectionContainer").find(".dialogueWord")
+
+  allDivs.each(function(index){
+    $(this).removeClass("marked")
+    $(this).removeClass("unmarked")
+    $(this).addClass("unmarked")
+  })
 }
 
-function idStageDirections(e){
- 	var selection = window.getSelection()
-  var range = window.getSelection() || document.getSelection() || document.selection.createRange();
-  var word = $.trim(range.toString());
-  if(word != '') {
-    var range =selection.getRangeAt(selection.rangeCount - 1)
-	  var endIdx = range.startOffset
-	  if(firstStageDirectionIndex >= endIdx){
-	    firstStageDirectionIndex = endIdx
-	    range.collapse();
-      e.stopPropagation();
-	    return
-	  }
-	  if(firstStageDirectionIndex == -1){
-	  	firstStageDirectionIndex = endIdx
-	  	range.collapse();
-      e.stopPropagation();
-	  	return
-	  }
+var previousStageIdx = -1
 
-	  var markedText = stageDirectionMap[stageDirectionIndex]["markedText"]
-	  endIdx = markedText.indexOf(" ", endIdx)
-	  endIdx = endIdx != -1 ? endIdx : markedText.length 
-	  markedText = markedText.slice(0, firstStageDirectionIndex) + '<div class="highlightedDirections">' + markedText.slice(firstStageDirectionIndex, endIdx) + '</div>' + markedText.slice(endIdx)
-	  stageDirectionMap[stageDirectionIndex]["markedText"] = markedText
-	  setStageDirectionDisplay()
-
-	  firstStageDirectionIndex = -1
-
+function idStageDirections(evt){ 
+  function sortDirections(a, b){
+    if(a["start"] > b["start"]){
+      return 1
+    }else if(a["start"] < b["start"]){
+      return -1
+    }
+    return 0
   }
-  range.collapse();
-  e.stopPropagation();
 
+  var targ = $(evt.target)
+  var newStartIndex = targ.index()
+
+  // Figure out the word index by removing count of breaks
+  var breakCount = 0
+  $("#stageDirectionContainer").find("*").each(function(index){
+    if(index > newStartIndex){
+      return false
+    }
+    if($(this).is("br")){
+      breakCount++
+    }
+  })
+
+  newStartIndex -= breakCount
+
+  if(previousStageIdx == -1){
+    previousStageIdx = newStartIndex
+  }else{
+    var firstStageDirectionIndex = previousStageIdx
+    var endIdx = newStartIndex
+    if(firstStageDirectionIndex > endIdx){
+      previousStageIdx = endIdx
+      return
+    }
+
+    var allDivs = $("#stageDirectionContainer").find(".dialogueWord")
+
+    allDivs.each(function(index){
+      if(index >= firstStageDirectionIndex &&
+         index <= endIdx){
+        $(this).addClass("marked")
+        $(this).removeClass("unmarked")
+      }
+    })
+
+    previousStageIdx = -1
+  }
+}
+
+
+function setStageDirectionDisplay(){
+  if(stageDirectionIndex < stageDirectionMap.length){
+    var entry = stageDirectionMap[stageDirectionIndex]
+    $("#directionCharacterName").html(entry["character"])
+
+    $("#highlightStageDirections").html(entry["html"])
+  }else{
+    stageDirectionsComplete()
+  }
 }
 
 // -------------
 function createEntrancesExitsMap(){
-  // add stage direction if there are directions before the first character speaks
-  var localDelinetaeIdx = 0
-  for(key in delineateMap){
-  	var entry = delineateMap[key]
-  	if(entry["isLine"]){
-  		break
-  	}
-  	localDelinetaeIdx += 1
-  }
-
-  if(localDelinetaeIdx > 0){
-  	var direction = fullText.substring(0, delineateMap[localDelinetaeIdx]["idx"])
-    entrancesExitsMap.push({
-                     "type": "stageDirection",
-                     "text": direction,
-                     "entrances": [],
-                     "exits": []
-                     })
-  }
-
   // break out all other divs
-	for(var key in stageDirectionMap){
-		var entry = stageDirectionMap[key]
-		var character = entry["character"]
-		var markedText = entry["markedText"]
-		var highlightedArray = markedText.split('<div class="highlightedDirections">')
-		for(key in highlightedArray){
-			var portion = highlightedArray[key]
-			var endDivIndex = portion.indexOf('</div>')
-			if(endDivIndex == -1){
-				if(portion.replace(/^\s+|\s+$/g, '').length != 0){
-		      entrancesExitsMap.push({
-                               "type": "line",
-                               "character": character,
-                               "text": portion
-	                             })
-		    }
-			}else{
-				var stageDirection = portion.substring(0, endDivIndex)
-				var afterDivIdx = endDivIndex + '</div>'.length
-				var line = portion.substring(afterDivIdx)
-		    
-		    entrancesExitsMap.push({
-                         "type": "stageDirection",
-                         "text": stageDirection,
-                         "entrances": [],
-                         "exits": []
-	                       })
+  for(var key in stageDirectionMap){
+    var entry = stageDirectionMap[key]
+    var character = entry["character"]
+    var rawText = entry["rawText"]
 
-		    if(line.replace(/^\s+|\s+$/g, '').length != 0){
-		      entrancesExitsMap.push({
-                               "type": "line",
-                               "character": character,
-                               "text": line
-	                             })
-		    }
-			}
-		}
+    var allDivs = $($.parseHTML(entry["html"])).find(".dialogueWord")
+
+    // these are purposefully global for access inside the .each
+    previousIsStageDirection = false
+    stageDirIdx = -1
+    stageDirIdxMap = []
+    letterIndex = 0
+    allDivs.each(function(index){
+      var currWord = $(this).text()
+      letterIndex= rawText.indexOf(currWord, letterIndex)
+
+      if($(this).hasClass("marked")){
+        if(stageDirIdx == -1){
+          stageDirIdx = letterIndex
+        }
+      }
+
+      if(($(this).hasClass("unmarked")  || 
+        allDivs.length - 1 == index) &&
+        stageDirIdx != -1){
+        stageDirIdxMap.push({"start": stageDirIdx, "end": letterIndex})
+        stageDirIdx = -1
+      }
+
+    })
+
+
+    if(stageDirIdxMap.length == 0){
+      // whole text is dialogue
+      entrancesExitsMap.push({
+          "type": "line",
+          "character": character,
+          "text": rawText
+      })
+    }else{
+      var previousEnd = 0
+      for(var key in stageDirIdxMap){
+        entry = stageDirIdxMap[key]
+        // add dialogue
+        if(entry["start"] != previousEnd){
+          entrancesExitsMap.push({
+            "type": "line",
+            "character": character,
+            "text": rawText.substring(previousEnd, entry["start"])
+          })
+        }
+
+        // add stage direction
+        entrancesExitsMap.push({
+          "type": "stageDirection",
+          "text": rawText.substring(entry["start"], entry["end"]),
+          "entrances": [],
+          "exits": []
+        })
+
+        previousEnd = entry["end"]
+      }
+
+      // add any dialogue after the last stage direction
+      var finalEntryIdx = stageDirIdxMap.length - 1
+      if(stageDirIdxMap[finalEntryIdx]["end"] != rawText.length){
+        entrancesExitsMap.push({
+          "type": "line",
+          "character": character,
+          "text": rawText.substring(stageDirIdxMap[finalEntryIdx]["end"], rawText.length)
+        })
+      }
+    }
   }
 }
 
 function findNextStageDirection(){
-	entrancesExitsIndex += 1
-	while(entrancesExitsIndex < entrancesExitsMap.length &&
-		entrancesExitsMap[entrancesExitsIndex]["type"] != "stageDirection"){
-		entrancesExitsIndex += 1
-	}
-	return entrancesExitsIndex < entrancesExitsMap.length && 
-	       entrancesExitsMap[entrancesExitsIndex]["type"] == "stageDirection"
+  entrancesExitsIndex += 1
+  while(entrancesExitsIndex < entrancesExitsMap.length &&
+    entrancesExitsMap[entrancesExitsIndex]["type"] != "stageDirection"){
+    entrancesExitsIndex += 1
+  }
+  return entrancesExitsIndex < entrancesExitsMap.length && 
+         entrancesExitsMap[entrancesExitsIndex]["type"] == "stageDirection"
 }
 
 function findPreviousStageDirection(){
-	entrancesExitsIndex -= 1
-	while(entrancesExitsIndex > 0 &&
-		entrancesExitsMap[entrancesExitsIndex]["type"] != "stageDirection"){
-		entrancesExitsIndex -= 1
-	}
-	entrancesExitsIndex = entrancesExitsIndex >= 0 ? entrancesExitsIndex: 0
-	return entrancesExitsMap[entrancesExitsIndex]["type"] == "stageDirection"
+  entrancesExitsIndex -= 1
+  while(entrancesExitsIndex > 0 &&
+    entrancesExitsMap[entrancesExitsIndex]["type"] != "stageDirection"){
+    entrancesExitsIndex -= 1
+  }
+  entrancesExitsIndex = entrancesExitsIndex >= 0 ? entrancesExitsIndex: 0
+  return entrancesExitsMap[entrancesExitsIndex]["type"] == "stageDirection"
 }
 
 
 function setEntrancesExitsDisplay(){
-	if(entrancesExitsIndex < entrancesExitsMap.length){
-		var entry = entrancesExitsMap[entrancesExitsIndex]
-		// apply the changes that occurr in the transition
-		for(var key in entry["entrances"]){
-			var enters = entry["entrances"][key]
+  if(entrancesExitsIndex < entrancesExitsMap.length){
+    var entry = entrancesExitsMap[entrancesExitsIndex]
+    // apply the changes that occurr in the transition
+    for(var key in entry["entrances"]){
+      var enters = entry["entrances"][key]
 
-			var idxOn = charsOnStage.indexOf(enters)
-			charsOnStage.splice(idxOn, 1)
-			charsOffStage.push(enters)
-		}
-		for(var key in entry["exits"]){
-			var exits = entry["exits"][key]
+      var idxOn = charsOnStage.indexOf(enters)
+      charsOnStage.splice(idxOn, 1)
+      charsOffStage.push(enters)
+    }
+    for(var key in entry["exits"]){
+      var exits = entry["exits"][key]
 
-			var idxOff = charsOffStage.indexOf(exits)
-			charsOffStage.splice(idxOff, 1)
-			charsOnStage.push(exits)
-		}
-		entry["entrances"] = []
-		entry["exits"] = []
+      var idxOff = charsOffStage.indexOf(exits)
+      charsOffStage.splice(idxOff, 1)
+      charsOnStage.push(exits)
+    }
+    entry["entrances"] = []
+    entry["exits"] = []
 
-		$("#entrancesExitsText").html(entry["text"])
-  	setOnStageOffStage()
-	}else{
-		entrancesExitsMap.push(entrancesExitsMap.push({
+    $("#entrancesExitsText").html(entry["text"])
+    setOnStageOffStage()
+  }else{
+    entrancesExitsMap.push(entrancesExitsMap.push({
                            "type": "stageDirection",
                            "text": "",
                            "entrances": [],
                            "exits": charsOnStage
-	                         }))
-		markupComplete()
-	}
+                           }))
+    markupComplete()
+  }
 }
 
 
 function setOnStageOffStage(){
-	charsOnStage.sort()
-	charsOffStage.sort()
-	var offStageHTML = ""
-	for(key in charsOffStage){
-		var entry = charsOffStage[key]
-		offStageHTML += '<option value="' + entry + '">' + entry + "</option>"
-	}
-	$("#offStage").html(offStageHTML)
+  charsOnStage.sort()
+  charsOffStage.sort()
+  var offStageHTML = ""
+  for(key in charsOffStage){
+    var entry = charsOffStage[key]
+    offStageHTML += '<option value="' + entry + '">' + entry + "</option>"
+  }
+  $("#offStage").html(offStageHTML)
 
-	var onStageHTML = ""
-	for(key in charsOnStage){
-		var entry = charsOnStage[key]
-		onStageHTML += '<option value="' + entry + '">' + entry + "</option>"
-	}
+  var onStageHTML = ""
+  for(key in charsOnStage){
+    var entry = charsOnStage[key]
+    onStageHTML += '<option value="' + entry + '">' + entry + "</option>"
+  }
 
-	$("#onStage").html(onStageHTML)
+  $("#onStage").html(onStageHTML)
 }
 
 function enterStage(){
-	var entering = $("#offStage").val()
-	for(key in entering){
-		var enters = entering[key]
+  var entering = $("#offStage").val()
+  for(key in entering){
+    var enters = entering[key]
 
-		// Remove it from the exit map in case of toggling back and forth
-		var exitsIdx = entrancesExitsMap[entrancesExitsIndex]["exits"].indexOf(enters)
-		if(exitsIdx != -1){
-  		entrancesExitsMap[entrancesExitsIndex]["exits"].splice(exitsIdx, 1)
-  	}else{
-  	  // Update the entrances map
-		  entrancesExitsMap[entrancesExitsIndex]["entrances"].push(enters)
-  	}
+    // Remove it from the exit map in case of toggling back and forth
+    var exitsIdx = entrancesExitsMap[entrancesExitsIndex]["exits"].indexOf(enters)
+    if(exitsIdx != -1){
+      entrancesExitsMap[entrancesExitsIndex]["exits"].splice(exitsIdx, 1)
+    }else{
+      // Update the entrances map
+      entrancesExitsMap[entrancesExitsIndex]["entrances"].push(enters)
+    }
 
-		// Remove it from tracking for display
-		var offIdx = charsOffStage.indexOf(enters)
-		charsOffStage.splice(offIdx,1)
-		charsOnStage.push(enters)
-	}
-	setOnStageOffStage()
+    // Remove it from tracking for display
+    var offIdx = charsOffStage.indexOf(enters)
+    charsOffStage.splice(offIdx,1)
+    charsOnStage.push(enters)
+  }
+  setOnStageOffStage()
 }
 
 function exitStage(){
-	var exiting = $("#onStage").val()
-	for(key in exiting){
-		var exits = exiting[key]
+  var exiting = $("#onStage").val()
+  for(key in exiting){
+    var exits = exiting[key]
 
-		// Remove it from the exit map in case of toggling back and forth
-		var entersIdx = entrancesExitsMap[entrancesExitsIndex]["entrances"].indexOf(exits)
-		if(entersIdx != -1){
-  		entrancesExitsMap[entrancesExitsIndex]["entrances"].splice(entersIdx, 1)
-  	}else{
-  	  // Update the exits map
-		  entrancesExitsMap[entrancesExitsIndex]["exits"].push(exits)
-  	}
+    // Remove it from the exit map in case of toggling back and forth
+    var entersIdx = entrancesExitsMap[entrancesExitsIndex]["entrances"].indexOf(exits)
+    if(entersIdx != -1){
+      entrancesExitsMap[entrancesExitsIndex]["entrances"].splice(entersIdx, 1)
+    }else{
+      // Update the exits map
+      entrancesExitsMap[entrancesExitsIndex]["exits"].push(exits)
+    }
 
-		// Remove it from tracking for display
-		var offIdx = charsOnStage.indexOf(exits)
-		charsOnStage.splice(offIdx,1)
-		charsOffStage.push(exits)
-	}
-	setOnStageOffStage()
+    // Remove it from tracking for display
+    var offIdx = charsOnStage.indexOf(exits)
+    charsOnStage.splice(offIdx,1)
+    charsOffStage.push(exits)
+  }
+  setOnStageOffStage()
 }
 
 function entrancesExitsBack(){
-	if(findPreviousStageDirection()){
-	  setEntrancesExitsDisplay()
+  if(findPreviousStageDirection()){
+    setEntrancesExitsDisplay()
   }else{
-  	findNextStageDirection()
+    findNextStageDirection()
   }
 }
 
 function entrancesExitsNext(){
-	findNextStageDirection()
-	setEntrancesExitsDisplay()
+  findNextStageDirection()
+  setEntrancesExitsDisplay()
 }
 
 
 function createFinalPML(){
-	finalString = ""
-	finalString += "@a{number:" + actNumber + "}\n"
-	finalString += "@s{number:" + sceneNumber + "}\n"
+  finalString = ""
+  finalString += "@a{number:" + actNumber + "}\n"
+  finalString += "@s{number:" + sceneNumber + "}\n"
 
-	for(key in entrancesExitsMap){
-		entry = entrancesExitsMap[key]
-		if(entry["type"] == "line" && entry["character"] != ""){
-			finalString += "@l{name:" + entry["character"] + "}\n"
-			finalString += entry["text"] + "\n"
-		}else if(entry["type"] == "line" && entry["character"] == ""){
-			// No delineation, so all stage direction
-			finalString += "@d{}\n" + entry["text"] + "\n"
-		}else if(entry["type"] == "stageDirection"){
-			if(entry["text"].length > 0){
-		    finalString += "@d{}\n" + entry["text"] + "\n"
-		  }
-			// entrances
-			if(entry["entrances"].length > 0){
-			  finalString += "@e{names:["
-			  for(enterKey in entry["entrances"]){
-				  finalString += entry["entrances"][enterKey] + ","
-			  }
-			  // get rid of extra comma
-			  finalString = finalString.substring(0, finalString.length - 1) + "]}\n"
-		  }
-			// exits
-			if(entry["exits"].length > 0){
-			  finalString += "@x{names:["
-			  for(exitKey in entry["exits"]){
-			  	finalString += entry["exits"][exitKey] + ","
-			  }
-			  // get rid of extra comma
-			  finalString = finalString.substring(0, finalString.length -1) + "]}\n"
-		  }
-		}
-	}
+  for(key in entrancesExitsMap){
+    entry = entrancesExitsMap[key]
+    if(entry["type"] == "line" && entry["character"] != ""){
+      finalString += "@l{name:" + entry["character"] + "}\n"
+      finalString += entry["text"] + "\n"
+    }else if(entry["type"] == "line" && entry["character"] == ""){
+      // No delineation, so all stage direction
+      finalString += "@d{}\n" + entry["text"] + "\n"
+    }else if(entry["type"] == "stageDirection"){
+      if(entry["text"].length > 0){
+        finalString += "@d{}\n" + entry["text"] + "\n"
+      }
+      // entrances
+      if(entry["entrances"].length > 0){
+        finalString += "@e{names:["
+        for(enterKey in entry["entrances"]){
+          finalString += entry["entrances"][enterKey] + ","
+        }
+        // get rid of extra comma
+        finalString = finalString.substring(0, finalString.length - 1) + "]}\n"
+      }
+      // exits
+      if(entry["exits"].length > 0){
+        finalString += "@x{names:["
+        for(exitKey in entry["exits"]){
+          finalString += entry["exits"][exitKey] + ","
+        }
+        // get rid of extra comma
+        finalString = finalString.substring(0, finalString.length -1) + "]}\n"
+      }
+    }
+  }
 
-	$("#pmlOutput").html(finalString)
+  $("#pmlOutput").html(finalString)
 }
 
 
 
 // Transition functions
 function charactersTransition(){
-	$("#intro").toggle()
-	$("#sceneText").toggle()
-	var tmpCharacterList = $("#characterList").val().split(",")
-	for(key in tmpCharacterList){
-		entry = tmpCharacterList[key]
-		characterList.push(entry.replace(/\s/g, ''))
-	}
+  $("#intro").toggle()
+  $("#sceneText").toggle()
+  var tmpCharacterList = $("#characterList").val().split(",")
+  for(key in tmpCharacterList){
+    entry = tmpCharacterList[key]
+    characterList.push(entry.trim())
+  }
 }
 
 function textSubmitted(){
   sceneNumber = parseInt($("#sceneNum").val())
-	actNumber = parseInt($("#actNum").val())
-	if(actNumber == 0 || sceneNumber == 0){
-		$("#asFailMessage").html("It appears you didn't set an act or scene number for this text.")
-		return
-	}
-	$("#sceneText").hide()
-	createDelineateMap()
-	if(delineateMap.length > 0){
-	  setDelineateDisplay()
-	  $("#delineateLines").show()
-	  $(document).keydown(function(e){
-		  if(e.keyCode == 39){
-		  	delineationIsDialogue()
-		  }else if(e.keyCode == 37){
-		  	delineationNotDialogue()
-		  }else if(e.keyCode == 40 || e.keyCode == 38){
-		  	previousDelineation()
-		  }
-	  })
+  actNumber = parseInt($("#actNum").val())
+  if(actNumber == -1 || sceneNumber == -1){
+    $("#asFailMessage").html("It appears you didn't set an act or scene number for this text.")
+    return
+  }
+  $("#sceneText").hide()
+  createDelineateMap()
+  if(delineateMap.length > 0){
+    setDelineateDisplay()
+    $("#delineateLines").show()
+    $(document).keydown(function(e){
+      if(e.keyCode == 39){
+        delineationIsDialogue()
+      }else if(e.keyCode == 37){
+        delineationNotDialogue()
+      }else if(e.keyCode == 40 || e.keyCode == 38){
+        previousDelineation()
+      }
+    })
   }else{
-  	delineationComplete()
+    delineationComplete()
   }
 }
 
 function delineationComplete(){
-	$("#delineateLines").hide()
-	createStageDirectionMap()
-	if(stageDirectionMap.length != 0
-		&& stageDirectionMap[0]["character"] != ""){
-	  setStageDirectionDisplay()
-	  $("#stageDirections").show()
-	  $(document).unbind("keydown")
-	  $(document).keydown(function(e){
-		  if(e.keyCode == 39){
-		  	//advance
-		  	stageDirectionNext()
-		  }else if(e.keyCode == 37){
-		  	// go back
-		  	stageDirectionBack()
-		  }else if(e.keyCode == 67){
-		  	// clear current set
-		  	clearDeletedDirections()
-		  }
-	  })
+  $("#delineateLines").hide()
+  createStageDirectionMap()
+  if(stageDirectionMap.length != 0
+    && stageDirectionMap[0]["character"] != ""){
+    setStageDirectionDisplay()
+    $("#stageDirections").show()
+    $(document).unbind("keydown")
+    $(document).keydown(function(e){
+      if(e.keyCode == 39){
+        //advance
+        stageDirectionNext()
+      }else if(e.keyCode == 37){
+        // go back
+        stageDirectionBack()
+      }else if(e.keyCode == 67){
+        // clear current set
+        clearDeletedDirections()
+      }
+    })
 
     // double click word
     $("#highlightStageDirections").css({cursor:'pointer'})
-    $("#highlightStageDirections").dblclick(idStageDirections);
+    $("#highlightStageDirections").click(idStageDirections);
   }else{
-  	stageDirectionsComplete()
+    stageDirectionsComplete()
   }
 }
 
 function stageDirectionsComplete(){
-	$("#stageDirections").hide()
-	$(document).unbind("keydown")
-	$(document).keydown(function(e){
-		if(e.keyCode == 39){
-			//advance
-			entrancesExitsNext()
-		}else if(e.keyCode == 37){
-			// go back
-			entrancesExitsBack()
-		}
-	})
+  $("#stageDirections").hide()
+  $(document).unbind("keydown")
+  $("#highlightStageDirections").unbind("click")
+  $(document).keydown(function(e){
+    if(e.keyCode == 39){
+      //advance
+      entrancesExitsNext()
+    }else if(e.keyCode == 37){
+      // go back
+      entrancesExitsBack()
+    }
+  })
 
-	createEntrancesExitsMap()
+  createEntrancesExitsMap()
 
 
 
-	if(entrancesExitsMap.length == 1){
-		if(entrancesExitsMap[0]["type"] == "line"
-		  && entrancesExitsMap[0]["character"] == ""){
-			markupComplete()
-		  return
-		}
-	}
-	if(entrancesExitsMap.length > 0){
-	  charsOffStage = characterList
-	  findNextStageDirection()
-	  setEntrancesExitsDisplay()
-	  $("#entrancesExits").show()
+  if(entrancesExitsMap.length == 1){
+    if(entrancesExitsMap[0]["type"] == "line"
+      && entrancesExitsMap[0]["character"] == ""){
+      markupComplete()
+      return
+    }
+  }
+  if(entrancesExitsMap.length > 0){
+    charsOffStage = characterList
+    findNextStageDirection()
+    setEntrancesExitsDisplay()
+    $("#entrancesExits").show()
   }else{
-  	markupComplete()
+    markupComplete()
   }
 }
 
 
 function markupComplete(){
-	$("#entrancesExits").hide()
-	$(document).unbind("keydown")
-	createFinalPML()
-	$("#markupComplete").show()
+  $("#entrancesExits").hide()
+  $(document).unbind("keydown")
+  createFinalPML()
+  $("#markupComplete").show()
 }
 
 
@@ -562,61 +623,61 @@ function nextScene(){
   charsOnStage = []
   charsOffStage = []
 
-	$("#asFailMessage").html("")
-	$("#rawText").val("")
-	$("#pmlOutput").html("")
-	$("#sceneNum").val(parseInt($("#sceneNum").val()) + 1)
-	$("#markupComplete").hide()
+  $("#asFailMessage").html("")
+  $("#rawText").val("")
+  $("#pmlOutput").html("")
+  $("#sceneNum").val(parseInt($("#sceneNum").val()) + 1)
+  $("#markupComplete").hide()
 
-	$("#sceneText").show()
+  $("#sceneText").show()
 }
 
 function makeHeader(){
-	$("#intro").hide()
-	$("#markupComplete").hide()
-	$("#makeHeader").show()
-	$("#titleInput").on('paste, keyup', updateHeaderOutput)
-	$("#authorInput").on('paste, keyup', updateHeaderOutput)
-	$(document).click(updateHeaderOutput)
+  $("#intro").hide()
+  $("#markupComplete").hide()
+  $("#makeHeader").show()
+  $("#titleInput").on('paste, keyup', updateHeaderOutput)
+  $("#authorInput").on('paste, keyup', updateHeaderOutput)
+  $(document).click(updateHeaderOutput)
 }
 
 function updateHeaderOutput(){
-	var titleVal = $("#titleInput").val()
-	var authorVal = $("#authorInput").val()
-	pmlString = '@v{"version": 0.1}\n @play{"title":"'
-	              + titleVal + '"}, "author": "' + authorVal + '"}\n'
+  var titleVal = $("#titleInput").val()
+  var authorVal = $("#authorInput").val()
+  pmlString = '@v{"version": 0.1}\n @play{"title":"'
+                + titleVal + '"}, "author": "' + authorVal + '"}\n'
 
-	$("#headerOutput").html(pmlString)
+  $("#headerOutput").html(pmlString)
 }
 
 var characterListClickCount = 0
 var rawTextClickCount = 0
 
 $(document).ready(function(){
-	$("#characterList").click(function(){
-		if(characterListClickCount == 0){
-			$("#characterList").val("")
-			characterListClickCount += 1
-		}
-	})
+  $("#characterList").click(function(){
+    if(characterListClickCount == 0){
+      $("#characterList").val("")
+      characterListClickCount += 1
+    }
+  })
   
   $("#rawText").click(function(){
-		if(rawTextClickCount == 0){
-			$("#rawText").val("")
-			rawTextClickCount += 1
-		}
-	})
+    if(rawTextClickCount == 0){
+      $("#rawText").val("")
+      rawTextClickCount += 1
+    }
+  })
 
-	$("#submitCharacters").click(charactersTransition)
-	$("#charactersBack").click(charactersTransition)
-	$("#submitRawText").click(textSubmitted)
+  $("#submitCharacters").click(charactersTransition)
+  $("#charactersBack").click(charactersTransition)
+  $("#submitRawText").click(textSubmitted)
 
-	// entrances/exits
-	$("#enterStage").click(enterStage)
-	$("#exitStage").click(exitStage)
+  // entrances/exits
+  $("#enterStage").click(enterStage)
+  $("#exitStage").click(exitStage)
 
-	$("#nextScene").click(nextScene)
+  $("#nextScene").click(nextScene)
 
-	$(".makeHeaderClick").click(makeHeader)
+  $(".makeHeaderClick").click(makeHeader)
 
 })

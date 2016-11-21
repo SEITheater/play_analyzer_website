@@ -9,8 +9,8 @@
 <div id="sceneText">
 
 	<textarea id="rawText">Paste the raw text of a scene from the show into this box.</textarea><br>
-	Act:<input type="number" id="actNum" step="1" min="0"  value="0" />
-	Scene:<input type="number" id="sceneNum" step="1" min="0" value="0" /><br>
+	Act:<input type="number" id="actNum" step="1" min="-1"  value="-1" />
+	Scene:<input type="number" id="sceneNum" step="1" min="-1" value="-1" /><br>
 	<div id="asFailMessage"></div>
 	<button id="charactersBack">Back to Characters</button><button id="submitRawText">Start Markup</button>
 
@@ -25,7 +25,7 @@
 
 
 <div id="stageDirections">
-	<p>Double click the first and last words of any text portions that are not spoken to highlight them in red.  Hit C to clear the selections. Forward arrow to advance, backward arrow to go back.</p>
+	<p>Click the first and last words of any text portions that are not spoken to highlight them in red.  Hit C to clear the selections. Forward arrow to advance, backward arrow to go back.</p>
 	<h1 id="directionCharacterName"></h1>
 	<div id="highlightStageDirections" disabled></div><br>
 </div>

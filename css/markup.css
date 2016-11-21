@@ -55,6 +55,10 @@ textarea{
 	color: red;
 }
 
+#highlightStageDirections{
+	white-space: pre-wrap;
+}
+
 #stageDirections{
 	display: none;
 }
@@ -74,14 +78,14 @@ textarea{
 }
 
 #offStage{
-	width: 30%;
+	width: 40%;
 	height: 75;
 	size: 8;
 	color: black;
 }
 
 #onStage{
-	width: 30%;
+	width: 40%;
 	height: 75;
 	size: 8;
 	color: black;
@@ -118,7 +122,6 @@ textarea{
 #makeHeader{
 	display: none;
 	text-align: center;
-	white-space: pre-wrap;
 }
 
 #makeHeader p{
@@ -129,3 +132,17 @@ textarea{
 	color: #4CABFF;
 }
 
+#content h1{
+	margin: 0;
+}
+
+.unmarked{
+	float: left;
+	margin-right: 3px;
+}
+
+.marked{
+	float: left;
+	margin-right: 5;
+	color: red;
+}
