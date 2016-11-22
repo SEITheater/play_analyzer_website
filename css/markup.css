@@ -114,6 +114,13 @@ textarea{
 }
 
 
+#preEntranceExitText{
+	text-align: left;
+	margin-left: 10%;
+	width: 80%;
+	white-space: pre-wrap;
+}
+
 
 #entrancesExits button{
 	vertical-align: top;

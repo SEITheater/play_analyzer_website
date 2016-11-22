@@ -151,6 +151,7 @@ function createStageDirectionMap(){
   appendBetweenEntrys(previousEntry, fakeEntry)
 }
 
+var previousStageIdx = -1
 
 function stageDirectionBack(){
   stageDirectionMap[stageDirectionIndex]["html"] = $("#stageDirectionContainer").parent().html()
@@ -158,12 +159,15 @@ function stageDirectionBack(){
   stageDirectionIndex = stageDirectionIndex >= 0 ? stageDirectionIndex : 0
   setStageDirectionDisplay()
 
+  previousStageIdx = -1
 }
 
 function stageDirectionNext(){
   stageDirectionMap[stageDirectionIndex]["html"] = $("#stageDirectionContainer").parent().html()
   stageDirectionIndex += 1
   setStageDirectionDisplay()
+
+  previousStageIdx = -1
 }
 
 function clearDeletedDirections(){
@@ -174,9 +178,10 @@ function clearDeletedDirections(){
     $(this).removeClass("unmarked")
     $(this).addClass("unmarked")
   })
+
+  previousStageIdx = -1
 }
 
-var previousStageIdx = -1
 
 function idStageDirections(evt){ 
   function sortDirections(a, b){
@@ -190,6 +195,11 @@ function idStageDirections(evt){
 
   var targ = $(evt.target)
   var newStartIndex = targ.index()
+
+  // Check to ensure a word was clicked on
+  if($($("#stageDirectionContainer").find("*")[newStartIndex]).is("br")){
+    return;
+  }
 
   // Figure out the word index by removing count of breaks
   var breakCount = 0
@@ -257,7 +267,17 @@ function createEntrancesExitsMap(){
     letterIndex = 0
     allDivs.each(function(index){
       var currWord = $(this).text()
+      // ensure the index updates by skipping spaces
+      if(currWord.length == 0 &&
+        index != allDivs.length -1){
+        return true;
+      }
       letterIndex= rawText.indexOf(currWord, letterIndex)
+      // if it's the last character, extend to the end
+      if(index == allDivs.length -1){
+        letterIndex = rawText.length
+      }
+
 
       if($(this).hasClass("marked")){
         if(stageDirIdx == -1){
@@ -361,6 +381,11 @@ function setEntrancesExitsDisplay(){
     entry["entrances"] = []
     entry["exits"] = []
 
+    if(entrancesExitsIndex > 0){
+      $("#preEntranceExitText").html(entrancesExitsMap[entrancesExitsIndex - 1]["text"])
+    }else{
+      $("#preEntranceExitText").html("")
+    }
     $("#entrancesExitsText").html(entry["text"])
     setOnStageOffStage()
   }else{
@@ -509,7 +534,7 @@ function charactersTransition(){
 function textSubmitted(){
   sceneNumber = parseInt($("#sceneNum").val())
   actNumber = parseInt($("#actNum").val())
-  if(actNumber == -1 || sceneNumber == -1){
+  if(actNumber <= -1 || sceneNumber <= -1){
     $("#asFailMessage").html("It appears you didn't set an act or scene number for this text.")
     return
   }
