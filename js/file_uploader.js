@@ -29,11 +29,18 @@ $(document).ready(function(){
   	// send a request to validate the file as properly marked up PML
   	var numFiles = myDropzone.files.length
   	var file = myDropzone.files[numFiles - 1]
-  	makePostRequest(file, "validate_pml", "", {}, isValidPML)
+  	makePostRequest(file, "validate_pml", "", {}, isValidPML, serverErrorDisplay)
 
   });
 })
 
+
+function serverErrorDisplay(jqXHR, status, error){
+	$("#uploadInstructions").replaceWith("There appears to be a problem with that file.  Please ensure the file is properly marked up with PML and try re-submitting.")
+  console.log("Encountered post request error")
+  console.log(status)
+  console.log(error)
+}
 
 
 function isValidPML(responseFromServer){

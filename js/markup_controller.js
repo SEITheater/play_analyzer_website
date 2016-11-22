@@ -485,15 +485,15 @@ function entrancesExitsNext(){
 
 function createFinalPML(){
   finalString = ""
-  finalString += "@a{number:" + actNumber + "}\n"
-  finalString += "@s{number:" + sceneNumber + "}\n"
+  finalString += '@a{"number":' + actNumber + '}\n'
+  finalString += '@s{"number":' + sceneNumber + '}\n'
 
   for(key in entrancesExitsMap){
     entry = entrancesExitsMap[key]
     if(entry["type"] == "line" && 
       entry["character"] != "" &&
       entry["text"].trim() != ""){
-      finalString += "@l{name:" + entry["character"] + "}\n"
+      finalString += '@l{"name":"' + entry["character"] + '"}\n'
       finalString += entry["text"] + "\n"
     }else if(entry["type"] == "line" && entry["character"] == ""){
       // No delineation, so all stage direction
@@ -504,21 +504,21 @@ function createFinalPML(){
       }
       // entrances
       if(entry["entrances"].length > 0){
-        finalString += "@e{names:["
+        finalString += '@e{"names":['
         for(enterKey in entry["entrances"]){
-          finalString += entry["entrances"][enterKey] + ","
+          finalString += '"' + entry["entrances"][enterKey] + '",'
         }
         // get rid of extra comma
-        finalString = finalString.substring(0, finalString.length - 1) + "]}\n"
+        finalString = finalString.substring(0, finalString.length - 1) + "]}\n\n"
       }
       // exits
       if(entry["exits"].length > 0){
-        finalString += "@x{names:["
+        finalString += '@x{"names":['
         for(exitKey in entry["exits"]){
-          finalString += entry["exits"][exitKey] + ","
+          finalString += '"' + entry["exits"][exitKey] + '",'
         }
         // get rid of extra comma
-        finalString = finalString.substring(0, finalString.length -1) + "]}\n"
+        finalString = finalString.substring(0, finalString.length -1) + "]}\n\n"
       }
     }
   }
