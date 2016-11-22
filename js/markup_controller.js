@@ -612,7 +612,7 @@ function stageDirectionsComplete(){
     }
   }
   if(entrancesExitsMap.length > 0){
-    charsOffStage = characterList
+    charsOffStage = characterList.slice(0)
     findNextStageDirection()
     setEntrancesExitsDisplay()
     $("#entrancesExits").show()
