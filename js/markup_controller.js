@@ -490,7 +490,9 @@ function createFinalPML(){
 
   for(key in entrancesExitsMap){
     entry = entrancesExitsMap[key]
-    if(entry["type"] == "line" && entry["character"] != ""){
+    if(entry["type"] == "line" && 
+      entry["character"] != "" &&
+      entry["text"].trim() != ""){
       finalString += "@l{name:" + entry["character"] + "}\n"
       finalString += entry["text"] + "\n"
     }else if(entry["type"] == "line" && entry["character"] == ""){
@@ -530,6 +532,7 @@ function createFinalPML(){
 function charactersTransition(){
   $("#intro").toggle()
   $("#sceneText").toggle()
+  characterList = []
   var tmpCharacterList = $("#characterList").val().split(",")
   for(key in tmpCharacterList){
     entry = tmpCharacterList[key]
