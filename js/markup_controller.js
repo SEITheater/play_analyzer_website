@@ -382,7 +382,13 @@ function setEntrancesExitsDisplay(){
     entry["exits"] = []
 
     if(entrancesExitsIndex > 0){
-      $("#preEntranceExitText").html(entrancesExitsMap[entrancesExitsIndex - 1]["text"])
+      var preTextString = ""
+      var previousEntry = entrancesExitsMap[entrancesExitsIndex - 1]
+      if(previousEntry["type"] == "line"){
+        preTextString += previousEntry["character"] + "\n"
+      }
+      preTextString += previousEntry["text"]
+      $("#preEntranceExitText").html(preTextString)
     }else{
       $("#preEntranceExitText").html("")
     }
