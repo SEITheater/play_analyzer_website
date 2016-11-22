@@ -521,7 +521,7 @@ function createFinalPML(){
     }
   }
 
-  $("#pmlOutput").html(finalString)
+  $("#pmlOutput").val(finalString)
 }
 
 
