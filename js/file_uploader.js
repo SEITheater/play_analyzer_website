@@ -50,5 +50,4 @@ function isValidPML(responseFromServer){
 	}else{		
 		$("#uploadInstructions").replaceWith("There appears to be a problem with that file.  Please ensure the file is properly marked up with PML and try re-submitting.")
 	}
-	analyticsPMLFileUpload(map["isValidPML"])
 }

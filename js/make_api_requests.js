@@ -3,7 +3,7 @@
 // Please use these scripts in compliance with the site's Terms of Service
 // and ensure that you have appropriate permissions before digitizing copyrighted texts
 
-baseURL = 'http://api.PlayAnalyzer.com/' 
+baseURL = 'http://api.playanalyzer.com' 
 
 function errorHandler(jqXHR, status, error){
   console.log("Encountered post request error")
